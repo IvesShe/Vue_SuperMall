@@ -390,11 +390,9 @@ export default {
 
 直接使用封裝好的swiper組件
 
-新增HomeSwiper.vue
+## 新增HomeSwiper.vue
 
 將使用輪播圖的代碼，再封裝成一個組件，給Home.vue使用
-
-HomeSwiper.vue
 
 ```js
 <template>
@@ -432,9 +430,8 @@ export default {
 </style>
 ```
 
-修改Home.vue
+## 修改Home.vue
 
-Home.vue
 ```js
 <template>
   <div id="home">
