@@ -335,3 +335,124 @@ export default {
 ```
 
 ![image](./images/20210725165521.png)
+
+# 首頁 - 新增輪播圖
+
+組件建立完成時，請求數據
+
+## 新增home.js
+
+```js
+import { request } from "./request";
+
+export function getHomeMultidata(){
+    return request({
+        url: '/home/multidata'
+    })
+}
+```
+
+## 修改Home.vue
+
+```js
+import {getHomeMultidata} from "network/home"
+
+export default {
+    name: "Home",
+    components: {
+        NavBar
+    },
+    data(){
+        return {
+            // result: null,
+            banners: [],
+            recommends: []
+        }
+    },
+    created() {
+        // 1.請求多個數據
+        getHomeMultidata().then(res => {
+            console.log(res);
+            // this.result = res;
+            // console.log("@@@result",this.result);
+            this.banners = res.data.banner.list;
+            this.recommends = res.data.recommend.list;
+        })
+    },
+}
+```
+
+訪問得到的資料，已存放在data
+
+![image](./images/20210725201719.png)
+
+## 新增swiper
+
+直接使用封裝好的swiper組件
+
+新增HomeSwiper.vue
+
+將使用輪播圖的代碼，再封裝成一個組件，給Home.vue使用
+
+```js
+<template>
+  <swiper>
+          <swiper-item v-for="item in banners" :key="item">
+              <a :href="item.link">
+                  <img :src="item.image" alt="">
+              </a>
+          </swiper-item>
+      </swiper>
+</template>
+
+<script>
+import {Swiper, SwiperItem} from 'components/common/swiper'
+
+export default {
+    name: "HomeSwiper",
+    props: {
+        banners: {
+            type: Array,
+            default() {
+                return []
+            }
+        }
+    },
+    components: {
+        Swiper,
+        SwiperItem
+    },
+}
+</script>
+
+<style>
+
+</style>
+```
+
+修改Home.vue
+
+```js
+<template>
+  <div id="home">
+      <nav-bar class="home-nav"><div slot="center">購物街</div></nav-bar>
+      <home-swiper :banners="banners"/>
+  </div>
+</template>
+
+<script>
+import NavBar from 'components/common/navbar/NavBar'
+import HomeSwiper from './childComps/HomeSwiper'
+import {getHomeMultidata} from "network/home"
+
+export default {
+    name: "Home",
+    components: {
+        NavBar,
+        HomeSwiper
+    },
+```
+
+## 成功運行輪播圖
+
+![image](./images/20210725205211.png)
