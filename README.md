@@ -267,7 +267,7 @@ npm run build
 <link rel="icon" href="<%= BASE_URL %>favicon.ico">
 ```
 
-# 首頁 - 導航
+# 首頁 - 新增導航
 ## Home.vue
 
 ```js
@@ -394,6 +394,8 @@ export default {
 
 將使用輪播圖的代碼，再封裝成一個組件，給Home.vue使用
 
+HomeSwiper.vue
+
 ```js
 <template>
   <swiper>
@@ -432,6 +434,7 @@ export default {
 
 修改Home.vue
 
+Home.vue
 ```js
 <template>
   <div id="home">
