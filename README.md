@@ -6,6 +6,7 @@ Github展示(開發中)
 
 https://ivesshe.github.io/Vue_SuperMall/
 
+![image](./images/20210726212250.png)
 # 安裝vue腳手架
 
 ## Vue CLI
@@ -783,3 +784,20 @@ Home.vue
 ```
 
 設定好之後Tab即會固定在上方固定的位置，當y值到上方44px時，即不受滾動影響
+
+# 打包上Github Pages
+
+需修改vue.config.js的設定
+
+新增這項設定
+
+```js
+module.exports = {
+    publicPath: process.env.NODE_ENV === 'production'
+    ? '/Vue_SuperMall/'
+    : '/'
+
+}
+```
+
+Vue_SuperMall為github專案名稱
