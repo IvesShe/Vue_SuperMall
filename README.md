@@ -2,6 +2,10 @@
 
 電商 購物網站建構
 
+Github展示(開發中)
+
+https://ivesshe.github.io/Vue_SuperMall/
+
 # 安裝vue腳手架
 
 ## Vue CLI
@@ -456,3 +460,326 @@ export default {
 ## 成功運行輪播圖
 
 ![image](./images/20210725205211.png)
+
+# 關閉eslint
+
+因為創專案時，預設使用到eslint
+
+VSCode也裝了Vetur，會跳eslint的警告
+
+![image](./images/20210726095227.png)
+
+需要分別關閉
+
+關閉專案eslint的檢察
+
+```json
+module.exports = {
+    lintOnSave:false //關閉eslint檢查
+}
+```
+
+關閉Vetur eslint的檢查
+
+![image](./images/20210726095149.png)
+
+# 首頁 - 新增 推薦信息
+
+## 新增RecommendView.vue
+
+```js
+<template>
+  <div class="recommend">
+      <div v-for="item in recommends" class="recommend-item">
+          <a :href="item.link">
+              <img :src="item.image" alt="">
+              <div>{{item.title}}</div>
+          </a>
+      </div>
+  </div>
+</template>
+
+<script>
+export default {
+    name: "RecommendView",
+    props: {
+        recommends: {
+            type: Array,
+            default() {
+                return []
+            }
+        }
+    }
+}
+</script>
+
+<style scoped>
+    .recommend {
+        display: flex;
+        text-align: center;
+        font-size: 12px;
+
+        padding: 10px 0 20px;
+        border-bottom: 10px solid #eee;
+    }
+
+    .recommend-item {
+        flex: 1
+    }
+
+    .recommend-item img {
+        width: 70px;
+        height: 70px;
+        margin-bottom: 10px;
+    }
+</style>
+```
+
+## 修改Home.vue
+
+```js
+<template>
+  <div id="home">
+      <nav-bar class="home-nav"><div slot="center">購物街</div></nav-bar>
+      <home-swiper :banners="banners"/>
+      <recommend-view :recommends="recommends"/>
+  </div>
+</template>
+
+<script>
+import RecommendView from './childComps/RecommendView'
+
+
+export default {
+    components: {
+        RecommendView
+    },
+</script>    
+```
+
+## 推薦信息 - 運行畫面
+
+![image](./images/20210726102321.png)
+
+# 首頁 - 新增 本周流行
+
+## 新增FeatureView.vue
+
+```js
+<template>
+  <div class="feature">
+      <a href="https://act.mogujie.com/zzlx67">
+        <img src="~assets/img/home/recommend_bg.jpg" alt="">
+      </a>
+  </div>
+</template>
+
+<script>
+export default {
+    name: "FeatureView"
+}
+</script>
+
+<style scoped>
+    .feature img {
+        width: 100%;
+    }
+</style>
+```
+
+## 修改Home.vue
+
+```js
+<template>
+  <div id="home">
+      <nav-bar class="home-nav"><div slot="center">購物街</div></nav-bar>
+      <home-swiper :banners="banners"/>
+      <recommend-view :recommends="recommends"/>
+      <feature-view/>
+
+  </div>
+</template>
+
+<script>
+import NavBar from 'components/common/navbar/NavBar'
+import HomeSwiper from './childComps/HomeSwiper'
+import RecommendView from './childComps/RecommendView'
+import FeatureView from './childComps/FeatureView'
+
+import {getHomeMultidata} from "network/home"
+
+export default {
+    name: "Home",
+    components: {
+        NavBar,
+        HomeSwiper,
+        RecommendView,
+        FeatureView
+    },
+    data(){  
+        return {
+            // result: null,
+            banners: [],
+            recommends: []
+        }
+    },
+    created() {
+        // 1.請求多個數據
+        getHomeMultidata().then(res => {
+            console.log(res);
+            // this.result = res;
+            // console.log("@@@result",this.result);
+            this.banners = res.data.banner.list;
+            this.recommends = res.data.recommend.list;
+        })
+    },
+}
+</script>
+
+<style scoped>
+    #home {
+        /* 留標頭的空間 */
+        padding-top: 44px;
+    }
+
+    .home-nav {
+        background-color: var(--color-tint);
+        color: #fff;
+
+        /* 解決標頭一起滾動的問題 */
+        position: fixed;    
+        left: 0;
+        right: 0;
+        top: 0;
+        z-index: 9;
+    }
+</style>
+```
+
+
+新增列表假資料，方便滑動
+
+ul>li{列表$}*100
+
+## 本週流行 - 運行畫面
+
+![image](./images/20210726162714.png)
+
+# 首頁 - 新增 TabControl功能
+
+## 新增TabControl.vue
+
+```js
+<template>
+  <div class="tab-control">
+      <div v-for="(item,index) in titles" 
+      class="tab-control-item" 
+      :class="{active: index===currentIndex}" 
+      @click="itemClick(index)">
+          <span>{{item}}</span>
+      </div>
+  </div>
+</template>
+
+<script>
+export default {
+    name: "TabControl",
+    props: {
+        titles: {
+            type: Array,
+            default() {
+                return []
+            }
+        }
+    },
+    data() {
+        return {
+            currentIndex: 0
+        }
+    },
+    methods: {
+        itemClick(index) {
+            this.currentIndex = index;
+        }
+    },
+}
+</script>
+
+<style scoped>
+    .tab-control {
+        display: flex;
+        text-align: center;
+        font-size: 15px;
+        
+        height: 40px;
+        line-height: 40px;
+        background-color: #fff;
+    }
+
+    .tab-control-item {
+        flex: 1;
+    }
+
+    .tab-control-item span {
+        padding: 5px;
+    }
+
+    .active {
+        color: var(--color-high-text);
+    }
+
+    .active span {
+        border-bottom: 3px solid var(--color-tint);
+    }
+</style>
+```
+
+## 修改Home.vue
+
+```js
+<template>
+  <div id="home">
+        <tab-control class="tab-control" :titles="['流行','新款','精選']"/>
+  </div>
+</template>
+
+<script>
+import TabControl from 'components/content/tabControl/TabControl.vue'
+
+export default {
+    name: "Home",
+    components: {
+        TabControl
+    },
+```
+
+## TabControl功能 - 運行畫面
+
+![image](./images/20210726205620.png)
+
+# 將TabControl置頂
+
+
+Home.vue
+```js
+<template>
+  <div id="home">
+      <tab-control class="tab-control" :titles="['流行','新款','精選']"/>
+  </div>
+</template>
+
+<script>
+
+</script>
+
+<style scoped>
+
+    /* 鎖定TabControl的位置 */
+    .tab-control {
+        position: sticky;
+        top: 44px;
+    }
+</style>
+```
+
+設定好之後Tab即會固定在上方固定的位置，當y值到上方44px時，即不受滾動影響
