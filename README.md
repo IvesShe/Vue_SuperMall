@@ -4,8 +4,6 @@
 
 Github展示(開發中)
 
-https://ivesshe.github.io/Vue_SuperMall/
-
 ![image](./images/20210726212250.png)
 # 安裝vue腳手架
 
